@@ -1,0 +1,8 @@
+{
+  // เว็บ "คำนวณก่อนสั่งของจากจีน" เป็นไฟล์ static ล้วน (index.html + trends.json)
+  "name": "khamnuan",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./"
+  }
+}
