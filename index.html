@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="คำนวณก่อนสั่งของจากจีน ฟรี รู้ค่าส่งคาร์โก้จีน-ไทย ต้นทุนถึงมือ และกำไรหลังหักค่าธรรมเนียม Shopee Lazada TikTok ก่อนสั่งจาก 1688 Taobao พร้อมสินค้ามาแรงและบริษัทรับฝากสั่ง">
+<meta property="og:title" content="คำนวณก่อนสั่งของจากจีน | ค่าส่ง ต้นทุน กำไร">
+<meta property="og:description" content="ใส่ราคาหยวนกับขนาดสินค้า รู้ทันทีว่าสั่งมาขายแล้วได้กำไรเท่าไร และคาร์โก้เจ้าไหนถูกสุด">
+<title>คำนวณก่อนสั่งของจากจีน | ค่าส่ง ต้นทุน กำไร</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f4fa3'/%3E%3Crect x='7' y='12' width='18' height='13' rx='2' fill='%23f2b233'/%3E%3Cpath d='M7 12l3-5h12l3 5' fill='none' stroke='%23f2b233' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: form ledger on the left, a sticky "shipping label" result panel on the right; stacks on phones with a sticky profit bar */
+:root{
+  --bg:#f3f4f6; --surface:#ffffff; --line:#d9dde3; --ink:#18202b; --muted:#5b6573;
+  --accent:#1f4fa3; --accent-soft:#e3ebf8; --tag:#f2b233; --tag-ink:#3a2a00;
+  --good:#1d7a46; --good-bg:#e1f3e8; --warn:#9a5b00; --warn-bg:#fcefd6; --bad:#b3261e; --bad-bg:#fbe3e1;
+  --seg-goods:#1f4fa3; --seg-ship:#5d8bd6; --seg-fee:#c08a1e; --seg-profit:#1d7a46;
+  --display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --body:"IBM Plex Sans Thai",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151b; --surface:#1a2029; --line:#2d3644; --ink:#e7ebf0; --muted:#9aa5b4;
+  --accent:#7ea6ef; --accent-soft:#1f2c42; --tag:#e0a62e; --tag-ink:#231800;
+  --good:#5cc98a; --good-bg:#16301f; --warn:#e7b25a; --warn-bg:#33270f; --bad:#f08a82; --bad-bg:#3a1a18;
+  --seg-goods:#7ea6ef; --seg-ship:#4a6fae; --seg-fee:#d9a43a; --seg-profit:#5cc98a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151b; --surface:#1a2029; --line:#2d3644; --ink:#e7ebf0; --muted:#9aa5b4;
+  --accent:#7ea6ef; --accent-soft:#1f2c42; --tag:#e0a62e; --tag-ink:#231800;
+  --good:#5cc98a; --good-bg:#16301f; --warn:#e7b25a; --warn-bg:#33270f; --bad:#f08a82; --bad-bg:#3a1a18;
+  --seg-goods:#7ea6ef; --seg-ship:#4a6fae; --seg-fee:#d9a43a; --seg-profit:#5cc98a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 90px}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);line-height:1.15;margin:0;text-wrap:balance}
+header p{margin:6px 0 0;color:var(--muted);max-width:62ch}
+header .tagline{font-family:var(--display);font-size:clamp(16px,2.2vw,19px);color:var(--accent);margin-top:2px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+section.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.box h2{font-family:var(--display);font-size:18px;margin:0;display:flex;align-items:baseline;gap:10px}
+.box h2 .step{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.form{display:flex;flex-direction:column;gap:16px}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
+label.f span.u{font-size:12px}
+input[type=number],input[type=text],select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;font-variant-numeric:tabular-nums}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.check input{margin-top:4px;accent-color:var(--accent)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:inherit;font-size:14px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+/* cargo compare */
+.cargo-wrap{overflow-x:auto}
+table.cargo{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:560px}
+.cargo th{font-size:12px;color:var(--muted);font-weight:500;text-align:left;padding:4px 6px}
+.cargo td{padding:5px 6px;border-top:1px solid var(--line)}
+.cargo td.out{font-family:var(--mono);text-align:right;white-space:nowrap}
+.cargo tr.best td.out{color:var(--good);font-weight:600}
+.cargo .basis{display:block;font-size:11px;color:var(--muted);font-family:var(--body);font-weight:400}
+.cheap{display:inline-block;font-size:11px;background:var(--good-bg);color:var(--good);padding:1px 7px;border-radius:999px;margin-left:4px}
+/* result panel */
+aside.result{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+@media (max-width:880px){aside.result{position:static}}
+.label-top{background:var(--tag);color:var(--tag-ink);padding:10px 18px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.res{padding:18px;display:flex;flex-direction:column;gap:16px}
+.verdict{display:inline-flex;align-self:flex-start;padding:4px 12px;border-radius:999px;font-weight:600;font-size:14px}
+.v-good{background:var(--good-bg);color:var(--good)} .v-warn{background:var(--warn-bg);color:var(--warn)} .v-bad{background:var(--bad-bg);color:var(--bad)}
+.big{display:flex;flex-direction:column}
+.big .k{font-size:13px;color:var(--muted)}
+.big .v{font-family:var(--display);font-size:40px;line-height:1.1;font-variant-numeric:tabular-nums}
+.big .s{font-size:14px;color:var(--muted)}
+.bar{display:flex;height:14px;border-radius:4px;overflow:hidden;background:var(--line)}
+.bar i{display:block;height:100%}
+.legend{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:13.5px;font-variant-numeric:tabular-nums}
+.legend dt{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.legend dt b{width:10px;height:10px;border-radius:2px;display:inline-block;flex:none}
+.legend dd{margin:0;text-align:right;font-family:var(--mono);font-size:13px}
+.legend .tot{border-top:1px solid var(--line);padding-top:4px;color:var(--ink);font-weight:600}
+.prices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.price{background:var(--accent-soft);border-radius:8px;padding:10px 12px}
+.price .k{font-size:12.5px;color:var(--muted)}
+.price .v{font-family:var(--mono);font-size:18px;color:var(--ink)}
+.lot{font-size:14px;border-top:1px dashed var(--line);padding-top:12px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-variant-numeric:tabular-nums}
+.lot span:nth-child(even){text-align:right;font-family:var(--mono);font-size:13.5px}
+.note{font-size:12px;color:var(--muted);margin:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:13.5px;padding:7px 12px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+/* mobile sticky profit bar */
+.mbar{display:none}
+@media (max-width:880px){.mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));justify-content:space-between;align-items:center;gap:12px;font-variant-numeric:tabular-nums}
+  .mbar a{color:var(--accent);font-size:14px}}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .25s ease}}
+/* trends */
+.trend-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 16px}
+.trend-head .upd{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.trends{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+@media (max-width:1050px){.trends{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}}
+@media (max-width:640px){.trends{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}.tcard{flex:0 0 80%;scroll-snap-align:start}}
+.tcard{border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0;background:var(--bg)}
+.tcard .rk{font-family:var(--mono);font-size:12px;color:var(--tag-ink);background:var(--tag);align-self:flex-start;padding:1px 8px;border-radius:4px}
+.tcard h3{font-family:var(--display);font-size:16px;line-height:1.3;margin:0;text-wrap:balance}
+.tcard .cat{font-size:12px;color:var(--muted)}
+.tcard p{margin:0;font-size:13.5px}
+.tcard .risk{font-size:12.5px;color:var(--warn);background:var(--warn-bg);padding:6px 8px;border-radius:6px}
+.kw{display:flex;align-items:center;gap:6px;font-size:13px;flex-wrap:wrap}
+.kw code{font-family:var(--body);background:var(--surface);border:1px solid var(--line);padding:1px 6px;border-radius:4px;user-select:all}
+.kw button,.tcard .try{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:3px 8px;cursor:pointer}
+.tcard .try{margin-top:auto;background:var(--accent);border-color:var(--accent);color:var(--surface);padding:6px 10px;font-size:13.5px}
+.tcard .src{font-size:12px;color:var(--muted)}
+.tcard .src a{color:var(--accent)}
+.empty{border:1px dashed var(--line);border-radius:8px;padding:16px;color:var(--muted);font-size:14px}
+/* shipping guide */
+.ship{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:880px){.ship{grid-template-columns:minmax(0,1fr)}}
+.leg{display:flex;flex-direction:column;gap:10px;min-width:0}
+.leg h3{font-family:var(--display);font-size:15px;margin:0;display:flex;gap:8px;align-items:center}
+.leg h3 .pin{font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 6px}
+.leg ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.leg li{font-size:13.5px;border-left:2px solid var(--line);padding-left:10px}
+.leg li b{display:block;font-weight:600}
+.leg li span{color:var(--muted)}
+.tip{font-size:13px;background:var(--accent-soft);border-radius:6px;padding:8px 10px;margin:0}
+/* agents directory */
+.agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.agent{border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0;background:var(--bg)}
+.agent h3{font-family:var(--display);font-size:16px;margin:0}
+.agent p{margin:0;font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chips span{font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.agent .contact{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.agent .contact b{color:var(--ink);font-weight:500;user-select:all}
+.agent a{color:var(--accent);font-size:13.5px;margin-top:auto}
+.checklist{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:14px}
+/* feedback */
+.fb{display:flex;flex-direction:column;gap:12px;max-width:640px}
+.fb textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-height:110px;resize:vertical}
+.fb .row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.fb .send{font:inherit;font-size:14.5px;align-self:flex-start;padding:9px 18px;border-radius:6px;border:1px solid var(--accent);background:var(--accent);color:var(--surface);cursor:pointer}
+.fb .send[disabled]{opacity:.6;cursor:default}
+.fb .status{font-size:14px;margin:0}
+.fb .status.ok{color:var(--good)} .fb .status.err{color:var(--bad)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>คำนวณก่อนสั่งของจากจีน</h1>
+    <p class="tagline">รู้ต้นทุน ค่าส่ง และกำไร ก่อนเสียเงินจริง</p>
+    <p>ใส่ราคาสินค้าจาก 1688 หรือ Taobao แล้วดูต้นทุนถึงมือ กำไรสุทธิหลังหักค่าธรรมเนียม และคาร์โก้เจ้าไหนถูกที่สุดสำหรับล็อตนี้ ตัวเลขที่กรอกไว้เป็นตัวอย่าง แก้เป็นของจริงได้ทุกช่อง</p>
+  </header>
+
+  <section class="box" id="trendBox" aria-live="polite">
+    <div class="trend-head">
+      <h2><span class="step">TOP 5</span>สินค้ามาแรงจากจีนที่ขายได้ในไทย</h2>
+      <span class="upd" id="trendUpd">กำลังโหลด…</span>
+    </div>
+    <div class="trends" id="trends">
+      <div class="empty" id="trendEmpty">รายการสินค้ามาแรงจะแสดงที่นี่ และอัปเดตทุกสัปดาห์</div>
+    </div>
+    <p class="hint" id="trendNote">กด "ลองคำนวณ" เพื่อใส่ขนาดและน้ำหนักโดยประมาณลงเครื่องคำนวณ จากนั้นค้นคำภาษาจีนใน 1688 แล้วใส่ราคาจริงที่เจอ</p>
+  </section>
+
+  <div class="grid">
+    <div class="form">
+      <section class="box">
+        <h2><span class="step">01</span>สินค้าและค่าสั่งซื้อ</h2>
+        <div class="fields">
+          <label class="f">ชื่อสินค้า<input type="text" id="name" value="กระเป๋าผ้าแคนวาส"></label>
+          <label class="f">ราคาต่อชิ้น <span class="u">(หยวน)</span><input type="number" id="price" step="0.01" min="0" value="18"></label>
+          <label class="f">จำนวนที่สั่ง <span class="u">(ชิ้น)</span><input type="number" id="qty" step="1" min="1" value="100"></label>
+          <label class="f">ค่าส่งในจีนทั้งล็อต <span class="u">(หยวน)</span><input type="number" id="cnship" step="0.01" min="0" value="30"></label>
+          <label class="f">เรทหยวน <span class="u">(บาท ต่อ 1 หยวน)</span><input type="number" id="rate" step="0.01" min="0" value="5.02"></label>
+          <label class="f">ค่าบริการฝากสั่ง <span class="u">(%)</span><input type="number" id="agent" step="0.1" min="0" value="3"></label>
+          <label class="f">ค่าโอน/ค่าอื่นทั้งล็อต <span class="u">(บาท)</span><input type="number" id="transfer" step="1" min="0" value="0"></label>
+        </div>
+        <p class="hint"><span id="rateInfo">เรทตั้งต้น 5.02 คือเรทกลางตลาดช่วงกลาง ต.ค. 2569</span> <button type="button" class="btn" id="rateLive" hidden style="padding:2px 8px;font-size:12.5px">ใช้เรทล่าสุด</button><br>บริษัทฝากโอนมักคิดสูงกว่าเรทกลางตลาดเล็กน้อย ถ้ารู้เรทจริงของเจ้าที่ใช้ ใส่ทับได้เลย <span id="rateAttr" hidden>· <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener" style="color:var(--muted)">Rates By Exchange Rate API</a></span></p>
+      </section>
+
+      <section class="box">
+        <h2><span class="step">02</span>ขนาดและน้ำหนักต่อชิ้น (รวมกล่อง)</h2>
+        <div class="fields">
+          <label class="f">น้ำหนัก <span class="u">(กก.)</span><input type="number" id="kg" step="0.01" min="0" value="0.25"></label>
+          <label class="f">กว้าง <span class="u">(ซม.)</span><input type="number" id="w" step="0.1" min="0" value="30"></label>
+          <label class="f">ยาว <span class="u">(ซม.)</span><input type="number" id="l" step="0.1" min="0" value="25"></label>
+          <label class="f">สูง <span class="u">(ซม.)</span><input type="number" id="h" step="0.1" min="0" value="3"></label>
+        </div>
+        <p class="hint" id="sizeOut"></p>
+      </section>
+
+      <section class="box">
+        <h2><span class="step">03</span>เทียบคาร์โก้จีน–ไทย</h2>
+        <p class="hint">คาร์โก้จะคิดทั้งแบบต่อกิโลและแบบต่อคิว แล้วเก็บแบบที่แพงกว่า ใส่เรทของเจ้าที่คุณใช้ได้สูงสุด 3 เจ้า ระบบจะเลือกเจ้าที่ถูกที่สุดให้อัตโนมัติ</p>
+        <div class="cargo-wrap">
+          <table class="cargo">
+            <thead><tr><th>ชื่อคาร์โก้</th><th>บาท/กก.</th><th>บาท/คิว</th><th>ขั้นต่ำ (บาท)</th><th style="text-align:right">ค่าส่งล็อตนี้</th></tr></thead>
+            <tbody id="cargoBody"></tbody>
+          </table>
+        </div>
+        <label class="check"><input type="checkbox" id="taxIncl" checked><span>เรทคาร์โก้รวมภาษีแล้ว (แบบเหมาภาษี)</span></label>
+        <div class="fields" id="taxFields" hidden>
+          <label class="f">อากรขาเข้า <span class="u">(% ตามพิกัดสินค้า)</span><input type="number" id="duty" step="0.1" min="0" value="0"></label>
+        </div>
+        <p class="hint" id="taxHint" hidden>คิดตามหลักศุลกากร: อากร = (ค่าสินค้า + ค่าขนส่ง) × อัตราอากร และ VAT 7% คิดจาก (ค่าสินค้า + ค่าขนส่ง + อากร) ตั้งแต่ 1 ม.ค. 2569 สินค้านำเข้าเสียภาษีตั้งแต่บาทแรก อัตราอากรขึ้นกับพิกัดสินค้า เช่น เสื้อผ้ามัก 20–30% เช็กอัตราจริงกับชิปปิ้งก่อนสั่ง</p>
+      </section>
+
+      <section class="box">
+        <h2><span class="step">04</span>ขายที่ไหน ราคาเท่าไร</h2>
+        <div class="seg" id="platforms" role="group" aria-label="ช่องทางขาย"></div>
+        <div class="fields">
+          <label class="f" id="catWrap">หมวดสินค้า<select id="cat"></select></label>
+          <label class="f">ค่าคอมมิชชัน <span class="u">(%)</span><input type="number" id="comm" step="0.01" min="0"></label>
+          <label class="f">ค่าธุรกรรม <span class="u">(%)</span><input type="number" id="pay" step="0.01" min="0"></label>
+          <label class="f">ค่าบริการเพิ่ม <span class="u">(%)</span><input type="number" id="extra" step="0.01" min="0"></label>
+          <label class="f">ค่าคงที่ต่อออเดอร์ <span class="u">(บาท)</span><input type="number" id="fixed" step="0.01" min="0"></label>
+        </div>
+        <p class="hint" id="platHint"></p>
+        <div class="fields">
+          <label class="f">ราคาขายต่อชิ้น <span class="u">(บาท)</span><input type="number" id="sell" step="1" min="0" value="199"></label>
+          <label class="f">ค่าแพ็กต่อชิ้น <span class="u">(บาท)</span><input type="number" id="pack" step="0.5" min="0" value="5"></label>
+          <label class="f">ค่าส่งที่ร้านออกเอง/ออเดอร์ <span class="u">(บาท)</span><input type="number" id="shipTh" step="1" min="0" value="0"></label>
+          <label class="f">เฉลี่ยกี่ชิ้นต่อออเดอร์<input type="number" id="upo" step="0.1" min="1" value="1"></label>
+          <label class="f">กำไรที่ต้องการ <span class="u">(%)</span><input type="number" id="target" step="1" min="0" max="90" value="30"></label>
+        </div>
+      </section>
+    </div>
+
+    <aside class="result" id="result" aria-live="polite">
+      <div class="label-top"><span>ผลคำนวณต่อชิ้น</span><span id="lotTag">LOT 100 PCS</span></div>
+      <div class="res">
+        <span class="verdict" id="verdict">–</span>
+        <div class="big">
+          <span class="k">กำไรสุทธิต่อชิ้น</span>
+          <span class="v" id="profit">–</span>
+          <span class="s" id="margin">–</span>
+        </div>
+        <div>
+          <div class="bar" id="bar" aria-hidden="true"><i id="bGoods" style="background:var(--seg-goods)"></i><i id="bShip" style="background:var(--seg-ship)"></i><i id="bFee" style="background:var(--seg-fee)"></i><i id="bProfit" style="background:var(--seg-profit)"></i></div>
+        </div>
+        <dl class="legend">
+          <dt><b style="background:var(--seg-goods)"></b>ค่าสินค้า + ฝากสั่ง</dt><dd id="lGoods"></dd>
+          <dt><b style="background:var(--seg-ship)"></b>คาร์โก้ + ภาษี</dt><dd id="lShip"></dd>
+          <dt><b style="background:var(--seg-ship);opacity:.5"></b>แพ็ก + ส่งในไทย</dt><dd id="lPack"></dd>
+          <dt><b style="background:var(--seg-fee)"></b>ค่าธรรมเนียมแพลตฟอร์ม</dt><dd id="lFee"></dd>
+          <dt><b style="background:var(--seg-profit)"></b>กำไร</dt><dd id="lProfit"></dd>
+          <dt class="tot">ราคาขาย</dt><dd class="tot" id="lSell"></dd>
+        </dl>
+        <div class="prices">
+          <div class="price"><div class="k">ราคาเท่าทุน</div><div class="v" id="pBreak">–</div></div>
+          <div class="price"><div class="k" id="pTargetK">ราคาที่ได้กำไร 30%</div><div class="v" id="pTarget">–</div></div>
+        </div>
+        <div class="lot">
+          <span>ต้นทุนถึงมือ/ชิ้น</span><span id="oLanded"></span>
+          <span>เงินที่ต้องใช้ทั้งล็อต</span><span id="oCash"></span>
+          <span>กำไรถ้าขายหมดล็อต</span><span id="oLot"></span>
+          <span>คาร์โก้ที่ใช้คำนวณ</span><span id="oCargo"></span>
+        </div>
+        <div class="actions">
+          <button class="btn" id="copy" type="button">คัดลอกสรุป</button>
+          <button class="btn" id="reset" type="button">กลับเป็นตัวอย่าง</button>
+        </div>
+        <p class="note">อัตราค่าธรรมเนียมตั้งต้นอ้างอิงประกาศปี 2569 (รวม VAT แล้ว) สำหรับร้านทั่วไปที่ไม่ใช่ Mall แพลตฟอร์มเปลี่ยนอัตราบ่อย ควรเช็กในหน้าร้านของคุณอีกครั้ง</p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="box" id="shipping">
+    <h2><span class="step">ขนส่ง</span>เลือกขนส่งแต่ละช่วงยังไงดี</h2>
+    <div class="ship">
+      <div class="leg">
+        <h3><span class="pin">ช่วง 1</span>ในจีน: ร้านจีน → โกดังคาร์โก้</h3>
+        <ul>
+          <li><b>中通 ZTO · 圆通 YTO · 韵达 Yunda · 申通 STO</b><span>ถูกที่สุด ร้านบน 1688 ส่วนใหญ่ใช้อยู่แล้ว เหมาะกับของทั่วไปล็อตเล็กถึงกลาง</span></li>
+          <li><b>顺丰 SF · 京东 JD</b><span>เร็วและของเสียหายน้อย แต่แพงกว่า ใช้กับของเปราะ ของมีราคา หรือของที่ต้องรีบ</span></li>
+          <li><b>德邦 Deppon หรือรถขนส่งเหมา (物流)</b><span>คุ้มกว่าสำหรับของหนักหรือหลายลัง เช่น 30 กก. ขึ้นไป</span></li>
+        </ul>
+        <p class="tip">ส่งที่อยู่โกดังพร้อมรหัสลูกค้า (唛头) ให้ร้านจีนทุกครั้ง และขอเลขพัสดุมาไว้ตาม ถ้าร้านลืมใส่รหัส ของอาจค้างในโกดัง</p>
+      </div>
+      <div class="leg">
+        <h3><span class="pin">ช่วง 2</span>จีน → ไทย: คาร์โก้</h3>
+        <ul>
+          <li><b>ทางรถ</b><span>นิยมที่สุดสำหรับแม่ค้าออนไลน์ เร็วกว่าทางเรือ เหมาะกับของเบาและของที่ต้องหมุนสต็อกเร็ว</span></li>
+          <li><b>ทางเรือ</b><span>ช้ากว่าแต่เรทต่อคิวมักถูกกว่า เหมาะกับของใหญ่ ของหนัก หรือสั่งสต็อกล่วงหน้า</span></li>
+          <li><b>เลือกเจ้าไหน</b><span>กรอกเรทหลายเจ้าในตารางเทียบด้านบน ของเบาแต่ใหญ่ให้ดูเรทต่อคิว ของเล็กแต่หนักให้ดูเรทต่อกิโล</span></li>
+        </ul>
+        <p class="tip">ก่อนสั่ง ถามคาร์โก้ 3 อย่าง: เรทรวมภาษีหรือยัง ของเสียหายหรือหายชดเชยยังไง และรับสินค้าประเภทนี้ไหม</p>
+      </div>
+      <div class="leg">
+        <h3><span class="pin">ช่วง 3</span>ในไทย: ส่งถึงลูกค้า</h3>
+        <ul>
+          <li><b>ขายบน Shopee, Lazada, TikTok Shop</b><span>ขนส่งมักถูกกำหนดโดยแพลตฟอร์ม เช่น SPX, Lazada Express หรือ J&amp;T ใช้ตามระบบได้เลย</span></li>
+          <li><b>Flash Express</b><span>เข้ารับถึงบ้าน ราคาเป็นมิตรกับร้านเล็ก เหมาะกับคนขายผ่าน Facebook และ LINE</span></li>
+          <li><b>J&amp;T Express</b><span>ราคาแข่งขันได้ และเชื่อมกับ TikTok Shop</span></li>
+          <li><b>ไปรษณีย์ไทย (EMS)</b><span>ครอบคลุมทั่วประเทศรวมพื้นที่ห่างไกล เหมาะกับลูกค้าต่างจังหวัด</span></li>
+          <li><b>KEX</b><span>เน้นคุณภาพบริการ ราคาสูงกว่า เหมาะกับของมีมูลค่า</span></li>
+        </ul>
+        <p class="tip">ขายเองผ่านโซเชียล ลองเปิดบัญชีกับ 2 เจ้าแล้วเทียบค่าส่งจริงของพัสดุขนาดที่คุณส่งบ่อยที่สุด</p>
+      </div>
+    </div>
+    <p class="hint">ไม่อยากติดต่อร้านจีนเอง ดูบริษัทไทยที่รับทำให้ครบได้ในส่วนถัดไป</p>
+    <p class="hint">ห้ามนำเข้าของก๊อปแบรนด์หรือตุ๊กตาลิขสิทธิ์ เครื่องสำอางต้องจดแจ้ง อย. ก่อนขาย และของที่มีแบตเตอรี่ เช่น พาวเวอร์แบงก์ กำลังจะถูกบังคับให้ต้องมี มอก. คาร์โก้หลายเจ้าก็ไม่รับของกลุ่มนี้</p>
+  </section>
+
+  <section class="box" id="agents">
+    <h2><span class="step">ตัวช่วย</span>บริษัทไทยรับฝากสั่งและนำเข้าจากจีน</h2>
+    <p class="hint">บริษัทเหล่านี้สั่งของจาก 1688, Taobao หรือ Tmall ให้ จ่ายเงินหยวนให้ร้านจีนแทน และขนมาส่งถึงไทย คุณไม่ต้องพูดจีนหรือมีบัญชีจีน เรียงตามตัวอักษร ข้อมูลมาจากหน้าเว็บของแต่ละบริษัท เว็บนี้ไม่ได้รับค่าโฆษณา</p>
+    <div class="agents">
+      <article class="agent">
+        <h3>Momo Cargo</h3>
+        <div class="chips"><span>ฝากสั่ง</span><span>ขนส่งจีน–ไทย</span><span>ไม่มีขั้นต่ำ</span></div>
+        <p>รับสั่งจาก Taobao, 1688, Tmall และ Alibaba มีโกดังทั้งในจีนและไทย พร้อมระบบติดตามสถานะ</p>
+        <a href="https://www.momocargo.com/" target="_blank" rel="noopener">momocargo.com</a>
+      </article>
+      <article class="agent">
+        <h3>PW Cargo Logistics</h3>
+        <div class="chips"><span>ฝากสั่ง</span><span>ชำระเงินแทน</span><span>ชิปปิ้งครบวงจร</span></div>
+        <p>รับสั่งจาก 1688, Taobao, Tmall ประสานงานร้านจีนให้ และนำเข้าครบวงจร สำนักงานอยู่บางแค กรุงเทพฯ</p>
+        <a href="https://www.yellowpages.co.th/lp/pwcargologistics" target="_blank" rel="noopener">ดูข้อมูลบริษัท</a>
+      </article>
+      <article class="agent">
+        <h3>Taobao2you</h3>
+        <div class="chips"><span>ฝากสั่ง</span><span>ทางรถ</span><span>ทางเรือ</span><span>ไม่มีขั้นต่ำ</span></div>
+        <p>หาสินค้าและต่อราคากับร้านจีนให้ มีโกดังจีนและไทย รับทั้งพัสดุย่อยและเหมาตู้ สำนักงานอยู่บางใหญ่ นนทบุรี</p>
+        <p class="contact">โทร <b>091-505-0775</b> · LINE <b>@TAOBAO2YOU</b></p>
+        <a href="https://www.taobao2you.com/" target="_blank" rel="noopener">taobao2you.com</a>
+      </article>
+      <article class="agent">
+        <h3>TTP Cargo</h3>
+        <div class="chips"><span>ฝากสั่ง</span><span>ฝากโอนหยวน</span><span>ทางรถ 5–7 วัน</span><span>ทางเรือ 12–15 วัน</span></div>
+        <p>ประกาศเรทบนหน้าเว็บ ทางรถ 21 บาท/กก. หรือ 5,000 บาท/คิว ทางเรือ 11 บาท/กก. หรือ 2,700 บาท/คิว (ราคาเบื้องต้น เปลี่ยนได้ ถามก่อนว่ารวมภาษีหรือยัง) โกดังไทยอยู่สมุทรสาคร</p>
+        <p class="contact">โทร <b>02-408-8105</b> · LINE <b>@TTPCARGO</b></p>
+        <a href="https://ttpcargo.com/" target="_blank" rel="noopener">ttpcargo.com</a>
+      </article>
+      <article class="agent">
+        <h3>Vcanbuy</h3>
+        <div class="chips"><span>ฝากสั่ง</span><span>จ่ายร้านจีนแทน</span><span>เร็วสุด 4–5 วัน</span><span>ไม่มีขั้นต่ำ</span></div>
+        <p>หาสินค้า ต่อราคา และประสานร้านจีนให้ หรือจะสั่งเองแล้วใช้แค่บริการขนส่งก็ได้ ระบบภาษาไทย เปิดมานานกว่า 10 ปี</p>
+        <p class="contact">สายด่วน <b>1336</b> (จ.–ส. 8:30–17:00)</p>
+        <a href="https://www.vcanbuy.com/" target="_blank" rel="noopener">vcanbuy.com</a>
+      </article>
+      <article class="agent">
+        <h3>VIPCARGO88</h3>
+        <div class="chips"><span>ฝากสั่ง</span><span>ทางรถ</span><span>ทางเรือ</span><span>เดินเรื่องศุลกากร</span></div>
+        <p>สั่งจาก Taobao และ 1688 ติดต่อโรงงาน และมีทัวร์พาไปดูตลาดค้าส่งหรือโรงงานในจีน เหมาะกับคนเริ่มสั่งล็อตใหญ่</p>
+        <a href="https://www.vipcargo88.com/" target="_blank" rel="noopener">vipcargo88.com</a>
+      </article>
+    </div>
+    <h3 style="font-family:var(--display);font-size:15px;margin:4px 0 0">เช็ก 5 ข้อก่อนใช้บริการ</h3>
+    <ol class="checklist">
+      <li>ค้นชื่อบริษัทในเว็บกรมพัฒนาธุรกิจการค้า (datawarehouse.dbd.go.th) ว่าจดทะเบียนจริงและยังเปิดกิจการอยู่</li>
+      <li>ขอเรทค่าขนส่งและเรทหยวนเป็นข้อความ แล้วถามให้ชัดว่ารวมภาษีหรือยัง</li>
+      <li>ถามเงื่อนไขถ้าของหาย เสียหาย หรือได้ไม่ครบ ว่าชดเชยยังไงและเท่าไร</li>
+      <li>ถามว่ารับสินค้าที่คุณจะสั่งไหม บางเจ้าไม่รับของมีแบตเตอรี่ ของเหลว หรือแบรนด์เนม</li>
+      <li>เริ่มจากล็อตเล็กก่อน แล้วเอาเรทจริงมาใส่ตารางเทียบคาร์โก้ด้านบน</li>
+    </ol>
+  </section>
+
+  <section class="box" id="feedback">
+    <h2><span class="step">ความคิดเห็น</span>อยากให้เพิ่มอะไร บอกเราได้</h2>
+    <form class="fb" id="fbForm" novalidate>
+      <div class="row">
+        <label class="f">เรื่อง<select id="fbType"><option>ข้อเสนอแนะ</option><option>แจ้งตัวเลขผิดหรือเว็บใช้ไม่ได้</option><option>แนะนำคาร์โก้หรือบริษัทฝากสั่ง</option><option>บริษัทขนส่งอยากร่วมงาน</option></select></label>
+        <label class="f">อีเมลของคุณ <span class="u">(ใส่ถ้าอยากให้ตอบกลับ)</span><input type="email" id="fbEmail" autocomplete="email" placeholder="name@example.com"></label>
+      </div>
+      <label class="f">ข้อความ<textarea id="fbMsg" maxlength="2000" placeholder="เช่น อยากให้เทียบทางเรือกับทางรถ หรือเรทคาร์โก้เจ้าที่ใช้อยู่"></textarea></label>
+      <input type="checkbox" id="fbHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" class="send" id="fbSend">ส่งความคิดเห็น</button>
+      <p class="status" id="fbStatus" role="status"></p>
+    </form>
+  </section>
+</div>
+
+<div class="mbar" id="mbar"><span>กำไร/ชิ้น <strong id="mProfit">–</strong></span><a href="#result">ดูรายละเอียด</a></div>
+
+<script type="application/json" id="trendSeed">{"basis": "คัดจากหมวดที่บทความเทรนด์ขายออนไลน์ไทยปี 2569 ระบุว่ามาแรง แล้วเลือกเฉพาะสินค้าที่นำเข้าจากจีนได้ง่าย ไม่ต้องขอ อย. หรือ มอก.", "items": [{"category": "บ้านและของใช้", "estSize": {"h": 10, "l": 18, "w": 25}, "estWeightKg": 0.4, "keywordCn": "桌面收纳盒", "name": "กล่องและชั้นจัดระเบียบ", "rank": 1, "risk": "ชิ้นใหญ่แต่เบา คาร์โก้มักคิดตามขนาด ให้ดูเรทต่อคิวให้ดี", "sources": [{"title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569", "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"}], "why": "คอนเทนต์จัดบ้านและ before-after ทำยอดดีบน TikTok ราคาต้นทุนต่ำ ขายเป็นเซ็ตได้"}, {"category": "สัตว์เลี้ยง", "estSize": {"h": 6, "l": 10, "w": 15}, "estWeightKg": 0.15, "keywordCn": "逗猫玩具", "name": "ของเล่นแมวแบบโต้ตอบ", "rank": 2, "risk": "ถ้าเป็นรุ่นใช้ถ่านหรือชาร์จไฟ เช็กก่อนว่าคาร์โก้รับไหม", "sources": [{"title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569", "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"}], "why": "หมวดสัตว์เลี้ยงโตเร็วที่สุดในช่วงสองปีหลัง คลิปสัตว์เลี้ยงไวรัลง่าย ชิ้นเล็ก ค่าส่งต่ำ"}, {"category": "แกดเจ็ต", "estSize": {"h": 2, "l": 8, "w": 12}, "estWeightKg": 0.08, "keywordCn": "手机支架 ins风", "name": "ที่วางมือถือและเคสลายเทรนด์", "rank": 3, "risk": "เคสต้องตรงรุ่นมือถือยอดนิยมในไทย และห้ามมีโลโก้แบรนด์", "sources": [{"title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569", "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"}], "why": "อุปกรณ์เสริมมือถือขายต่อเนื่องตามการใช้สมาร์ตโฟน เบามาก ราคาขายอยู่ในช่วงที่คนกดซื้อง่าย"}, {"category": "แฟชั่น", "estSize": {"h": 4, "l": 25, "w": 30}, "estWeightKg": 0.45, "keywordCn": "oversize卫衣", "name": "ฮู้ดดี้และเสื้อสตรีท oversize", "rank": 4, "risk": "ค่าคอมมิชชันหมวดแฟชั่นสูงสุด และเรื่องไซซ์ทำให้คืนของบ่อย", "sources": [{"title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569", "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"}, {"title": "StoreHub: 6 เทรนด์สินค้าขายง่าย 2026", "url": "https://www.storehub.com/th/th/blog/what-should-sold-online"}], "why": "สตรีทแวร์ราคาไม่แรงเป็นหมวดขายดี และกำลังเข้าหน้าหนาวกับช่วงเทศกาลปลายปี"}, {"category": "อุปกรณ์ความงาม", "estSize": {"h": 3, "l": 8, "w": 12}, "estWeightKg": 0.1, "keywordCn": "刮痧板 美容滚轮", "name": "กัวซาและลูกกลิ้งนวดหน้า", "rank": 5, "risk": "ของเปราะถ้าเป็นหยกหรือหิน ห่อกันกระแทกให้ดี", "sources": [{"title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569", "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"}], "why": "ความงามเป็นหมวดขายดีที่สุดบน TikTok อุปกรณ์นวดหน้าทำคลิปสาธิตง่าย และไม่ต้องจดแจ้ง อย. แบบเครื่องสำอาง"}], "period": "ต.ค. 2569", "updatedAt": "2026-10-16T02:30:00+07:00"}</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const PLATFORMS={
+  shopee:{name:"Shopee",cats:[["ของใช้ บิวตี้ อาหาร",16.05],["แฟชั่น",17.12],["เครื่องใช้ไฟฟ้าใหญ่",11.24],["มือถือ แท็บเล็ต โน้ตบุ๊ก",7.49]],pay:3.21,extra:0,fixed:1.07,growth:0,
+    hint:"ค่าบริการเพิ่ม 5.35–8.56% จะโดนเฉพาะร้านที่เข้าโปรแกรมส่งฟรีหรือโค้ดคุ้ม ถ้าเข้าร่วมให้ใส่ในช่องค่าบริการเพิ่ม"},
+  lazada:{name:"Lazada",cats:[["บิวตี้ ของใช้ อาหาร",16.05],["แฟชั่น",17.12],["มือถือ แท็บเล็ต ทีวี",6.96]],pay:3.21,extra:0,fixed:0,growth:0,
+    hint:"อัตราใหม่ของ Lazada มีผลตั้งแต่ 1 ส.ค. 2569"},
+  tiktok:{name:"TikTok Shop",cats:[["สินค้าทั่วไป",6.42],["อิเล็กทรอนิกส์",5.35]],pay:3.21,extra:0,fixed:0,growth:1,
+    hint:"รวมค่า Commerce Growth Fee ตามหมวด (สูงสุด 199 บาทต่อชิ้น) ไว้แล้ว ร้านที่ขายเกิน 100 ชิ้นใน 30 วันมีค่าคงที่ 1.07 บาทต่อออเดอร์เพิ่ม"},
+  social:{name:"Facebook / LINE",cats:null,pay:0,extra:0,fixed:0,growth:0,
+    hint:"ขายเองไม่มีค่าคอมมิชชัน ถ้าใช้ระบบรับเงินหรือระบบจัดการร้านที่มีค่าธรรมเนียม ให้ใส่เพิ่มเอง"}
+};
+const SAMPLE_CARGO=[["คาร์โก้ A",45,6500,0],["คาร์โก้ B",35,7500,0],["คาร์โก้ C",55,5500,0]];
+const IDS=["name","price","qty","cnship","rate","agent","transfer","kg","w","l","h","duty","sell","pack","shipTh","upo","target","comm","pay","extra","fixed"];
+const defaults={};IDS.forEach(id=>defaults[id]=$(id).value);
+let platform="shopee",catIdx=0;
+
+// cargo rows
+const body=$("cargoBody");
+SAMPLE_CARGO.forEach((c,i)=>{
+  const tr=document.createElement("tr");tr.id="cr"+i;
+  tr.innerHTML=`<td><input type="text" id="cn${i}" value="${c[0]}" aria-label="ชื่อคาร์โก้ ${i+1}"></td>
+  <td><input type="number" id="ck${i}" step="1" min="0" value="${c[1]}" aria-label="บาทต่อกิโล"></td>
+  <td><input type="number" id="cq${i}" step="10" min="0" value="${c[2]}" aria-label="บาทต่อคิว"></td>
+  <td><input type="number" id="cm${i}" step="1" min="0" value="${c[3]}" aria-label="ขั้นต่ำ"></td>
+  <td class="out" id="co${i}">–</td>`;
+  body.appendChild(tr);
+});
+
+// platform buttons
+const seg=$("platforms");
+Object.entries(PLATFORMS).forEach(([k,p])=>{
+  const b=document.createElement("button");b.type="button";b.textContent=p.name;b.dataset.k=k;
+  b.addEventListener("click",()=>{setPlatform(k,0);calc();save();});seg.appendChild(b);
+});
+$("cat").addEventListener("change",e=>{setPlatform(platform,+e.target.value);calc();save();});
+
+function setPlatform(k,ci){
+  platform=k;catIdx=ci;const p=PLATFORMS[k];
+  [...seg.children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k));
+  const sel=$("cat");sel.innerHTML="";
+  if(p.cats){$("catWrap").hidden=false;p.cats.forEach((c,i)=>{const o=document.createElement("option");o.value=i;o.textContent=c[0];sel.appendChild(o);});sel.value=ci;}
+  else $("catWrap").hidden=true;
+  $("comm").value=p.cats?p.cats[ci][1]:0;
+  $("pay").value=p.pay;
+  $("extra").value=p.growth&&p.cats?p.cats[ci][1]:p.extra;
+  $("fixed").value=p.fixed;
+  $("platHint").textContent=p.hint;
+}
+
+const n=id=>{const v=parseFloat($(id).value);return isFinite(v)&&v>=0?v:0};
+const baht=v=>(v<0?"-":"")+"฿"+Math.abs(v).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
+const baht0=v=>(v<0?"-":"")+"฿"+Math.abs(v).toLocaleString("th-TH",{maximumFractionDigits:0});
+
+function calc(){
+  const Q=Math.max(1,Math.round(n("qty"))),r=n("rate");
+  const goods=(n("price")*Q+n("cnship"))*r;
+  const agentFee=goods*n("agent")/100;
+  const totKg=n("kg")*Q, cbmPc=n("w")*n("l")*n("h")/1e6, totCbm=cbmPc*Q;
+  $("sizeOut").textContent=`ทั้งล็อต: ${totKg.toLocaleString("th-TH",{maximumFractionDigits:2})} กก. · ${totCbm.toLocaleString("th-TH",{maximumFractionDigits:4})} คิว`;
+  // cargo
+  let best=-1,bestCost=Infinity;
+  for(let i=0;i<3;i++){
+    const rk=n("ck"+i),rq=n("cq"+i),mn=n("cm"+i);
+    if(!rk&&!rq){$("co"+i).innerHTML="–";$("cr"+i).className="";continue;}
+    const byKg=totKg*rk,byQ=totCbm*rq;let cost=Math.max(byKg,byQ),basis=byKg>=byQ?"คิดตามน้ำหนัก":"คิดตามขนาด";
+    if(mn>cost){cost=mn;basis="ขั้นต่ำ";}
+    $("co"+i).dataset.cost=cost;$("co"+i).dataset.basis=basis;
+    if(cost<bestCost){bestCost=cost;best=i;}
+  }
+  for(let i=0;i<3;i++){const td=$("co"+i);if(td.dataset.cost===undefined||(!n("ck"+i)&&!n("cq"+i)))continue;
+    const isBest=i===best;$("cr"+i).className=isBest?"best":"";
+    td.innerHTML=`${baht0(+td.dataset.cost)}${isBest?'<span class="cheap">ถูกสุด</span>':''}<span class="basis">${td.dataset.basis}</span>`;}
+  const cargo=best>=0?bestCost:0;
+  // tax
+  const incl=$("taxIncl").checked;$("taxFields").hidden=incl;$("taxHint").hidden=incl;
+  let duty=0,vat=0;if(!incl){duty=(goods+cargo)*n("duty")/100;vat=(goods+cargo+duty)*0.07;}
+  const landedTotal=goods+agentFee+n("transfer")+cargo+duty+vat;
+  const upo=Math.max(1,n("upo"));
+  const goodsPc=(goods+agentFee+n("transfer"))/Q, shipPc=(cargo+duty+vat)/Q;
+  const packPc=n("pack")+n("shipTh")/upo;
+  const cost=goodsPc+shipPc+packPc;
+  // fees
+  const p=PLATFORMS[platform];
+  const pctNoGrowth=(n("comm")+n("pay")+(p.growth?0:n("extra")))/100;
+  const growthPct=p.growth?n("extra")/100:0;
+  const fixedPc=n("fixed")/upo;
+  const P=n("sell");
+  const growth=p.growth?Math.min(P*growthPct,199):0;
+  const fee=P*pctNoGrowth+growth+fixedPc;
+  const profit=P-fee-cost;const margin=P>0?profit/P:0;
+  const priceFor=m=>{const d=1-pctNoGrowth-growthPct-m;return d>0?(cost+fixedPc)/d:NaN};
+  const tgt=n("target")/100;const pB=priceFor(0),pT=priceFor(tgt);
+  // output
+  $("lotTag").textContent=`LOT ${Q.toLocaleString("en-US")} PCS`;
+  $("profit").textContent=baht(profit);$("profit").style.color=profit<0?"var(--bad)":"var(--ink)";
+  $("margin").textContent=P>0?`คิดเป็น ${(margin*100).toFixed(1)}% ของราคาขาย ${baht0(P)}`:"ใส่ราคาขายเพื่อดูกำไร";
+  const v=$("verdict");
+  if(P<=0){v.className="verdict v-warn";v.textContent="ยังไม่ได้ใส่ราคาขาย";}
+  else if(profit<0){v.className="verdict v-bad";v.textContent="ขาดทุน";}
+  else if(margin<0.10){v.className="verdict v-bad";v.textContent="กำไรบางมาก เสี่ยง";}
+  else if(margin<0.25){v.className="verdict v-warn";v.textContent="พอได้ แต่กำไรบาง";}
+  else {v.className="verdict v-good";v.textContent="คุ้ม น่าสั่ง";}
+  $("lGoods").textContent=baht(goodsPc);$("lShip").textContent=baht(shipPc);$("lPack").textContent=baht(packPc);
+  $("lFee").textContent=baht(fee);$("lProfit").textContent=baht(profit);$("lSell").textContent=baht(P);
+  const total=Math.max(P,cost+fee,0.0001);const pc=x=>Math.max(0,x)/total*100+"%";
+  $("bGoods").style.width=pc(goodsPc);$("bShip").style.width=pc(shipPc+packPc);$("bFee").style.width=pc(fee);$("bProfit").style.width=pc(profit);
+  $("pBreak").textContent=isFinite(pB)?baht0(Math.ceil(pB)):"ไม่มี";
+  $("pTargetK").textContent=`ราคาที่ได้กำไร ${Math.round(tgt*100)}%`;
+  $("pTarget").textContent=isFinite(pT)?baht0(Math.ceil(pT)):"ตั้งเป้าสูงเกิน";
+  $("oLanded").textContent=baht(goodsPc+shipPc);
+  $("oCash").textContent=baht0(landedTotal);
+  $("oLot").textContent=baht0(profit*Q);
+  $("oCargo").textContent=best>=0?$("cn"+best).value||("เจ้าที่ "+(best+1)):"ยังไม่ได้ใส่เรท";
+  $("mProfit").textContent=baht(profit);$("mProfit").style.color=profit<0?"var(--bad)":"var(--good)";
+  window._summary=[`สินค้า: ${$("name").value} (${Q} ชิ้น)`,`ต้นทุนถึงมือ/ชิ้น: ${baht(goodsPc+shipPc)}`,`ขายที่ ${p.name} ราคา ${baht0(P)}`,
+    `ค่าธรรมเนียม/ชิ้น: ${baht(fee)}`,`กำไรสุทธิ/ชิ้น: ${baht(profit)} (${(margin*100).toFixed(1)}%)`,
+    `ราคาเท่าทุน: ${isFinite(pB)?baht0(Math.ceil(pB)):"-"} · ราคาที่ได้กำไร ${Math.round(tgt*100)}%: ${isFinite(pT)?baht0(Math.ceil(pT)):"-"}`,
+    `เงินที่ต้องใช้ทั้งล็อต: ${baht0(landedTotal)} · กำไรถ้าขายหมด: ${baht0(profit*Q)}`,`คาร์โก้: ${$("oCargo").textContent}`].join("\n");
+}
+
+// persistence (per-viewer convenience)
+const KEY="import-calc-v2";
+let rateManual=false;
+function save(){try{const s={platform,catIdx,rateManual,taxIncl:$("taxIncl").checked,f:{}};
+  IDS.forEach(id=>s.f[id]=$(id).value);for(let i=0;i<3;i++)["cn","ck","cq","cm"].forEach(p=>s.f[p+i]=$(p+i).value);
+  localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(!s)return false;
+  setPlatform(s.platform in PLATFORMS?s.platform:"shopee",s.catIdx||0);
+  Object.entries(s.f||{}).forEach(([k,v])=>{if($(k))$(k).value=v;});$("taxIncl").checked=s.taxIncl!==false;rateManual=!!s.rateManual;return true;}catch(e){return false}}
+
+document.addEventListener("input",e=>{if(e.target.matches("input,select")){if(e.target.id==="rate"){rateManual=true;if(liveRate)$("rateLive").hidden=false;}calc();save();}});
+$("taxIncl").addEventListener("change",()=>{calc();save();});
+$("reset").addEventListener("click",()=>{try{localStorage.removeItem(KEY)}catch(e){}
+  IDS.forEach(id=>$(id).value=defaults[id]);SAMPLE_CARGO.forEach((c,i)=>{$("cn"+i).value=c[0];$("ck"+i).value=c[1];$("cq"+i).value=c[2];$("cm"+i).value=c[3];});
+  $("taxIncl").checked=true;setPlatform("shopee",0);rateManual=false;
+  if(typeof liveRate==="number"&&liveRate){$("rate").value=liveRate.toFixed(3);$("rateLive").hidden=true;}calc();});
+$("copy").addEventListener("click",async e=>{const b=e.currentTarget;
+  try{await navigator.clipboard.writeText(window._summary);b.textContent="คัดลอกแล้ว";}
+  catch(err){const ta=document.createElement("textarea");ta.value=window._summary;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");b.textContent="คัดลอกแล้ว";}catch(_){b.textContent="คัดลอกไม่ได้";}ta.remove();}
+  setTimeout(()=>b.textContent="คัดลอกสรุป",1800);});
+
+setPlatform("shopee",0);
+if(!load()){}
+calc();
+
+// ---- Live CNY->THB mid-market rate (works on the self-hosted site; blocked inside Claude's viewer, where the default stays) ----
+let liveRate=null;
+const FX_CACHE="fx-cny-thb";
+function applyLive(r,date,src){
+  liveRate=r;const d=date?new Date(date).toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"numeric"}):"";
+  $("rateInfo").textContent=`เรทกลางตลาดล่าสุด ${r.toFixed(3)} บาท/หยวน${d?" ("+d+")":""} อัปเดตอัตโนมัติ`;
+  $("rateAttr").hidden=src!=="er";
+  if(!rateManual){$("rate").value=r.toFixed(3);calc();save();$("rateLive").hidden=true;}
+  else $("rateLive").hidden=Math.abs(n("rate")-r)<0.0005;
+}
+$("rateLive").addEventListener("click",()=>{if(!liveRate)return;rateManual=false;$("rate").value=liveRate.toFixed(3);$("rateLive").hidden=true;calc();save();});
+(async()=>{
+  try{const c=JSON.parse(localStorage.getItem(FX_CACHE)||"null");if(c&&Date.now()-c.t<6*3600e3&&c.r>0){applyLive(c.r,c.d,c.s);return;}}catch(_){}
+  const tries=[
+    ["fr","https://api.frankfurter.dev/v1/latest?base=CNY&symbols=THB",j=>[j.rates&&j.rates.THB,j.date]],
+    ["fr","https://api.frankfurter.app/latest?from=CNY&to=THB",j=>[j.rates&&j.rates.THB,j.date]],
+    ["er","https://open.er-api.com/v6/latest/CNY",j=>[j.result==="success"&&j.rates&&j.rates.THB,j.time_last_update_utc]]];
+  for(const [s,u,pick] of tries){
+    try{const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),6000);
+      const r=await fetch(u,{signal:ctl.signal});clearTimeout(to);if(!r.ok)continue;
+      const [rate,date]=pick(await r.json());
+      if(typeof rate==="number"&&rate>3&&rate<8){try{localStorage.setItem(FX_CACHE,JSON.stringify({r:rate,d:date,s,t:Date.now()}))}catch(_){}applyLive(rate,date,s);return;}
+    }catch(_){}
+  }
+})();
+
+// ---- Feedback form: sends to the site owner's email via Web3Forms ----
+// Paste the access key from web3forms.com here (it is meant to be public).
+const FEEDBACK_KEY="";
+if(!FEEDBACK_KEY)$("feedback").hidden=true;
+$("fbForm").addEventListener("submit",async e=>{
+  e.preventDefault();const st=$("fbStatus"),btn=$("fbSend");st.className="status";
+  const msg=$("fbMsg").value.trim(),email=$("fbEmail").value.trim();
+  if(msg.length<5){st.className="status err";st.textContent="พิมพ์ข้อความอย่างน้อย 5 ตัวอักษร";$("fbMsg").focus();return;}
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){st.className="status err";st.textContent="รูปแบบอีเมลไม่ถูกต้อง หรือเว้นว่างได้";$("fbEmail").focus();return;}
+  if(!FEEDBACK_KEY){st.className="status err";st.textContent="กล่องความคิดเห็นยังไม่เปิดใช้งานในหน้านี้";return;}
+  btn.disabled=true;btn.textContent="กำลังส่ง…";
+  try{
+    const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
+      body:JSON.stringify({access_key:FEEDBACK_KEY,subject:"[คำนวณก่อนสั่งจีน] "+$("fbType").value,from_name:"คำนวณก่อนสั่งของจากจีน",email:email||undefined,เรื่อง:$("fbType").value,ข้อความ:msg,botcheck:$("fbHp").checked})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.success)throw 0;
+    st.className="status ok";st.textContent="ส่งแล้ว ขอบคุณที่ช่วยบอก"+(email?" เราจะตอบกลับทางอีเมล":"");$("fbMsg").value="";
+  }catch(_){st.className="status err";st.textContent="ส่งไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วกดส่งอีกครั้ง";}
+  finally{btn.disabled=false;btn.textContent="ส่งความคิดเห็น";}
+});
+
+// ---- Top 5 trends (shared store, updated weekly by Claude) ----
+const TRENDS_URL="trends.json";
+const tWrap=$("trends"),tUpd=$("trendUpd");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function renderTrends(d){
+  const items=Array.isArray(d&&d.items)?d.items.slice(0,5):[];
+  if(!items.length){tUpd.textContent="ยังไม่มีข้อมูล";return;}
+  tUpd.textContent=(d.period?`ช่วง ${d.period} · `:"")+(d.updatedAt?"อัปเดต "+new Date(d.updatedAt).toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"numeric"}):"");
+  tWrap.innerHTML="";
+  items.forEach((it,i)=>{
+    const c=document.createElement("article");c.className="tcard";
+    const srcs=(it.sources||[]).slice(0,2).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
+    c.innerHTML=`<span class="rk">#${i+1}</span><h3>${esc(it.name)}</h3><span class="cat">${esc(it.category)}</span>
+      <p>${esc(it.why)}</p>
+      ${it.risk?`<p class="risk">${esc(it.risk)}</p>`:""}
+      <div class="kw">ค้นใน 1688: <code>${esc(it.keywordCn)}</code><button type="button" data-kw>คัดลอก</button></div>
+      ${srcs?`<span class="src">ที่มา: ${srcs}</span>`:""}
+      <button type="button" class="try">ลองคำนวณ</button>`;
+    c.querySelector("[data-kw]").addEventListener("click",async e=>{const b=e.currentTarget;
+      try{await navigator.clipboard.writeText(it.keywordCn);b.textContent="คัดลอกแล้ว";}catch(_){b.textContent="กดค้างที่คำเพื่อคัดลอก";}
+      setTimeout(()=>b.textContent="คัดลอก",1600);});
+    c.querySelector(".try").addEventListener("click",()=>{
+      $("name").value=it.name||"";const s=it.estSize||{};
+      if(it.estWeightKg)$("kg").value=it.estWeightKg; if(s.w)$("w").value=s.w; if(s.l)$("l").value=s.l; if(s.h)$("h").value=s.h;
+      calc();save();const p=$("price");p.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});p.focus();p.select();});
+    tWrap.appendChild(c);
+  });
+}
+(async()=>{
+  const db=window.claude&&window.claude.use?await window.claude.use("db").catch(()=>null):null;
+  if(!db){
+    // Self-hosted copy: use the snapshot baked into the page at build time, or hide the section.
+    let seed=null;try{const el=document.getElementById("trendSeed");if(el)seed=JSON.parse(el.textContent);}catch(_){}
+    const ok=d=>d&&Array.isArray(d.items)&&d.items.length;
+    if(ok(seed))renderTrends(seed);
+    // Weekly-updated copy published as a JSON file (set TRENDS_URL); newer data replaces the baked-in snapshot.
+    if(TRENDS_URL){try{const r=await fetch(TRENDS_URL+(TRENDS_URL.includes("?")?"&":"?")+"t="+Math.floor(Date.now()/36e5),{cache:"no-store"});
+      if(r.ok){const d=await r.json();if(ok(d)&&(!ok(seed)||String(d.updatedAt)>=String(seed.updatedAt))){renderTrends(d);return;}}}catch(_){}}
+    if(!ok(seed))$("trendBox").hidden=true;
+    return;}
+  db.doc("trends/current").onSnapshot(s=>{if(s.exists)renderTrends(s.data());else tUpd.textContent="ยังไม่มีข้อมูล";},
+    ()=>{tUpd.textContent="โหลดรายการไม่สำเร็จ ลองเปิดหน้าใหม่";});
+})();
+})();
+</script>
+
+</body>
+</html>

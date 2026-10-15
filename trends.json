@@ -1,0 +1,111 @@
+{
+ "basis": "คัดจากหมวดที่บทความเทรนด์ขายออนไลน์ไทยปี 2569 ระบุว่ามาแรง แล้วเลือกเฉพาะสินค้าที่นำเข้าจากจีนได้ง่าย ไม่ต้องขอ อย. หรือ มอก.",
+ "items": [
+  {
+   "category": "บ้านและของใช้",
+   "estSize": {
+    "h": 10,
+    "l": 18,
+    "w": 25
+   },
+   "estWeightKg": 0.4,
+   "keywordCn": "桌面收纳盒",
+   "name": "กล่องและชั้นจัดระเบียบ",
+   "rank": 1,
+   "risk": "ชิ้นใหญ่แต่เบา คาร์โก้มักคิดตามขนาด ให้ดูเรทต่อคิวให้ดี",
+   "sources": [
+    {
+     "title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569",
+     "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"
+    }
+   ],
+   "why": "คอนเทนต์จัดบ้านและ before-after ทำยอดดีบน TikTok ราคาต้นทุนต่ำ ขายเป็นเซ็ตได้"
+  },
+  {
+   "category": "สัตว์เลี้ยง",
+   "estSize": {
+    "h": 6,
+    "l": 10,
+    "w": 15
+   },
+   "estWeightKg": 0.15,
+   "keywordCn": "逗猫玩具",
+   "name": "ของเล่นแมวแบบโต้ตอบ",
+   "rank": 2,
+   "risk": "ถ้าเป็นรุ่นใช้ถ่านหรือชาร์จไฟ เช็กก่อนว่าคาร์โก้รับไหม",
+   "sources": [
+    {
+     "title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569",
+     "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"
+    }
+   ],
+   "why": "หมวดสัตว์เลี้ยงโตเร็วที่สุดในช่วงสองปีหลัง คลิปสัตว์เลี้ยงไวรัลง่าย ชิ้นเล็ก ค่าส่งต่ำ"
+  },
+  {
+   "category": "แกดเจ็ต",
+   "estSize": {
+    "h": 2,
+    "l": 8,
+    "w": 12
+   },
+   "estWeightKg": 0.08,
+   "keywordCn": "手机支架 ins风",
+   "name": "ที่วางมือถือและเคสลายเทรนด์",
+   "rank": 3,
+   "risk": "เคสต้องตรงรุ่นมือถือยอดนิยมในไทย และห้ามมีโลโก้แบรนด์",
+   "sources": [
+    {
+     "title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569",
+     "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"
+    }
+   ],
+   "why": "อุปกรณ์เสริมมือถือขายต่อเนื่องตามการใช้สมาร์ตโฟน เบามาก ราคาขายอยู่ในช่วงที่คนกดซื้อง่าย"
+  },
+  {
+   "category": "แฟชั่น",
+   "estSize": {
+    "h": 4,
+    "l": 25,
+    "w": 30
+   },
+   "estWeightKg": 0.45,
+   "keywordCn": "oversize卫衣",
+   "name": "ฮู้ดดี้และเสื้อสตรีท oversize",
+   "rank": 4,
+   "risk": "ค่าคอมมิชชันหมวดแฟชั่นสูงสุด และเรื่องไซซ์ทำให้คืนของบ่อย",
+   "sources": [
+    {
+     "title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569",
+     "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"
+    },
+    {
+     "title": "StoreHub: 6 เทรนด์สินค้าขายง่าย 2026",
+     "url": "https://www.storehub.com/th/th/blog/what-should-sold-online"
+    }
+   ],
+   "why": "สตรีทแวร์ราคาไม่แรงเป็นหมวดขายดี และกำลังเข้าหน้าหนาวกับช่วงเทศกาลปลายปี"
+  },
+  {
+   "category": "อุปกรณ์ความงาม",
+   "estSize": {
+    "h": 3,
+    "l": 8,
+    "w": 12
+   },
+   "estWeightKg": 0.1,
+   "keywordCn": "刮痧板 美容滚轮",
+   "name": "กัวซาและลูกกลิ้งนวดหน้า",
+   "rank": 5,
+   "risk": "ของเปราะถ้าเป็นหยกหรือหิน ห่อกันกระแทกให้ดี",
+   "sources": [
+    {
+     "title": "SellerPao: ขายอะไรดีใน TikTok Shop 2569",
+     "url": "https://sellerpao.com/blog/tiktok-shop-best-selling-products-2569"
+    }
+   ],
+   "why": "ความงามเป็นหมวดขายดีที่สุดบน TikTok อุปกรณ์นวดหน้าทำคลิปสาธิตง่าย และไม่ต้องจดแจ้ง อย. แบบเครื่องสำอาง"
+  }
+ ],
+ "period": "ต.ค. 2569",
+ "updatedAt": "2026-10-16T02:30:00+07:00"
+}
