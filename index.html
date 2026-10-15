@@ -151,6 +151,15 @@ aside.result{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);backg
 .fb .status{font-size:14px;margin:0}
 .fb .status.ok{color:var(--good)} .fb .status.err{color:var(--bad)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+/* recommended gear (affiliate) */
+.gear{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.gitem{border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px;background:var(--bg);min-width:0}
+.gitem h3{font-family:var(--display);font-size:15px;margin:0}
+.gitem p{margin:0;font-size:13.5px;color:var(--muted)}
+.gitem a{margin-top:auto;align-self:flex-start;font-size:13.5px;padding:6px 12px;border-radius:6px;background:var(--seg-fee);color:var(--tag-ink);text-decoration:none;font-weight:600}
+.disclose{font-size:12px;color:var(--muted);margin:0}
+footer.site{max-width:1120px;margin:8px auto 0;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px}
+footer.site a{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -313,9 +322,15 @@ aside.result{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);backg
     <p class="hint">ห้ามนำเข้าของก๊อปแบรนด์หรือตุ๊กตาลิขสิทธิ์ เครื่องสำอางต้องจดแจ้ง อย. ก่อนขาย และของที่มีแบตเตอรี่ เช่น พาวเวอร์แบงก์ กำลังจะถูกบังคับให้ต้องมี มอก. คาร์โก้หลายเจ้าก็ไม่รับของกลุ่มนี้</p>
   </section>
 
+  <section class="box" id="gear" hidden>
+    <h2><span class="step">อุปกรณ์</span>ของที่คนนำเข้าใช้จริง</h2>
+    <div class="gear" id="gearList"></div>
+    <p class="disclose">ลิงก์ในส่วนนี้เป็นลิงก์ Shopee Affiliate ถ้าคุณซื้อผ่านลิงก์ เว็บจะได้ค่าคอมมิชชันเล็กน้อย โดยคุณไม่ต้องจ่ายเพิ่ม ช่วยให้เราเปิดเว็บนี้ให้ใช้ฟรีต่อได้</p>
+  </section>
+
   <section class="box" id="agents">
     <h2><span class="step">ตัวช่วย</span>บริษัทไทยรับฝากสั่งและนำเข้าจากจีน</h2>
-    <p class="hint">บริษัทเหล่านี้สั่งของจาก 1688, Taobao หรือ Tmall ให้ จ่ายเงินหยวนให้ร้านจีนแทน และขนมาส่งถึงไทย คุณไม่ต้องพูดจีนหรือมีบัญชีจีน เรียงตามตัวอักษร ข้อมูลมาจากหน้าเว็บของแต่ละบริษัท เว็บนี้ไม่ได้รับค่าโฆษณา</p>
+    <p class="hint">บริษัทเหล่านี้สั่งของจาก 1688, Taobao หรือ Tmall ให้ จ่ายเงินหยวนให้ร้านจีนแทน และขนมาส่งถึงไทย คุณไม่ต้องพูดจีนหรือมีบัญชีจีน เรียงตามตัวอักษร ข้อมูลมาจากหน้าเว็บของแต่ละบริษัท บริษัทเหล่านี้ไม่ได้จ่ายเงินให้เว็บเพื่อขึ้นรายชื่อ</p>
     <div class="agents">
       <article class="agent">
         <h3>Momo Cargo</h3>
@@ -381,6 +396,12 @@ aside.result{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);backg
     </form>
   </section>
 </div>
+
+<footer class="site" id="siteFooter" hidden>
+  <span>© 2569 คำนวณก่อนสั่งของจากจีน</span>
+  <a href="privacy.html">นโยบายความเป็นส่วนตัวและการติดต่อ</a>
+  <span>ตัวเลขทั้งหมดเป็นการประมาณ ควรเช็กกับผู้ให้บริการก่อนตัดสินใจ</span>
+</footer>
 
 <div class="mbar" id="mbar"><span>กำไร/ชิ้น <strong id="mProfit">–</strong></span><a href="#result">ดูรายละเอียด</a></div>
 
@@ -578,6 +599,19 @@ $("fbForm").addEventListener("submit",async e=>{
   }catch(_){st.className="status err";st.textContent="ส่งไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วกดส่งอีกครั้ง";}
   finally{btn.disabled=false;btn.textContent="ส่งความคิดเห็น";}
 });
+
+// ---- Self-hosted extras: footer + recommended gear from affiliate.json (links filled by the site owner) ----
+if(!(window.claude&&window.claude.use)){
+  $("siteFooter").hidden=false;
+  fetch("affiliate.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+    const items=(d&&Array.isArray(d.items)?d.items:[]).filter(it=>/^https:\/\/([a-z0-9-]+\.)*(shopee\.co\.th|shp\.ee)\//i.test(it.url||""));
+    if(!items.length)return;
+    const box=$("gearList");
+    items.forEach(it=>{const c=document.createElement("article");c.className="gitem";
+      c.innerHTML=`<h3>${esc(it.name)}</h3><p>${esc(it.why)}</p><a href="${esc(it.url)}" target="_blank" rel="sponsored noopener">ดูใน Shopee</a>`;box.appendChild(c);});
+    $("gear").hidden=false;
+  }).catch(()=>{});
+}
 
 // ---- Top 5 trends (shared store, updated weekly by Claude) ----
 const TRENDS_URL="trends.json";
